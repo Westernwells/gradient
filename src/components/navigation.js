@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'gatsby'
 import styles from './navigation.module.css'
+import Search from './Search'
 
 export default () => (
   <nav role="navigation">
@@ -11,6 +12,9 @@ export default () => (
       <li className={styles.navigationItem}>
         <Link to="/blog/">Blog</Link>
       </li>
-    </ul>
+      <li className={styles.navigationItem}>
+      </li>
+      </ul>
+      <Search />
   </nav>
 )

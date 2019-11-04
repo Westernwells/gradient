@@ -9,30 +9,26 @@ import heroStyles from '../components/hero.module.css'
 
 class BlogPostTemplate extends React.Component {
   render() {
-    const post = get(this.props, 'data.contentfulBlogPost')
+    const course = get(this.props, 'data.contentfulCourse')
     const siteTitle = get(this.props, 'data.site.siteMetadata.title')
 
     return (
       <Layout location={this.props.location} >
         <div style={{ background: '#fff' }}>
-          <Helmet title={`${post.title} | ${siteTitle}`} />
+          <Helmet title={`${course.title} | ${siteTitle}`} />
           <div className={heroStyles.hero}>
-            <Img className={heroStyles.heroImage} alt={post.title} fluid={post.heroImage.fluid} />
+            <Img className={heroStyles.heroImage} alt={course.title} fluid={course.image.fluid} />
           </div>
           <div className="wrapper">
-            <h1 className="section-headline">{post.title}</h1>
+            <h1 className="section-headline">{course.title}</h1>
             <p
               style={{
                 display: 'block',
               }}
             >
-              {post.publishDate}
+              {course.createdAt}
             </p>
-            <div
-              dangerouslySetInnerHTML={{
-                __html: post.body.childMarkdownRemark.html,
-              }}
-            />
+           <p>{course.description.description}</p>
           </div>
         </div>
       </Layout>
@@ -49,19 +45,24 @@ export const pageQuery = graphql`
         title
       }
     }
-    contentfulBlogPost(slug: { eq: $slug }) {
-      title
-      publishDate(formatString: "MMMM Do, YYYY")
-      heroImage {
-        fluid(maxWidth: 1180, background: "rgb:000000") {
-          ...GatsbyContentfulFluid_tracedSVG
-        }
-      }
-      body {
-        childMarkdownRemark {
-          html
-        }
+
+    contentfulCourse(slug: {eq: $slug}) {
+    createdAt(formatString: "MMMM Do, YYYY")
+    description {
+      description
+      childMarkdownRemark {
+            excerpt(format: PLAIN)
+          }
+    }
+    image {
+      fluid {
+        src
       }
     }
+    duration
+
+    title
+    slug
+  }
   }
 `
