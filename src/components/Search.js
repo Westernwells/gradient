@@ -10,7 +10,7 @@ const searchClient = algoliasearch(
 export default function Search() {
   return (
     <InstantSearch
-      indexName={process.env.GATSBY_ALGOLIA_INDEX_NAME}
+      indexName="test_GRADIENT"
       searchClient={searchClient}
     >
       <SearchBox />
@@ -18,3 +18,14 @@ export default function Search() {
     </InstantSearch>
   )
 }
+const Hiter = styled.div`
+   
+            font-size: '.85rem';
+            font-style: 'italic';
+            margin-bottom: '10px';
+            max-width: '30rem';
+`;
+
+const Container = styled.div`
+display: 'flex'; flex-wrap: 'wrap' 
+`;

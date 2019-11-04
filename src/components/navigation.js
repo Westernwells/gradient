@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'gatsby'
 import styles from './navigation.module.css'
-import Search from './Search'
+import Search from './SearchX'
 
 export default () => (
   <nav role="navigation">

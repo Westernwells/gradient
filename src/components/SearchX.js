@@ -1,70 +1,77 @@
-import React, { Component } from 'react';
-import algoliasearch from 'algoliasearch/lite';
-import {
-  InstantSearch,
-  Hits,
-  SearchBox,
-  RefinementList,
-  Pagination,
-  Highlight,
-} from 'react-instantsearch-dom';
-import PropTypes from 'prop-types';
-import './App.css';
+import React from 'react'
+import algoliasearch from 'algoliasearch/lite'
+import { connectHits, InstantSearch, SearchBox } from 'react-instantsearch-dom'
 
 const searchClient = algoliasearch(
     "Q7KZ36G3ZY",
     "ae44fcaea58eb60cf445a726797cbe01"
   )
-  
 
-class App extends Component {
-  render() {
-    return (
-      <div>
+// Please note, that to get the `css` prop to work, you'll either
+// need to add a jsx pragma or use a babel plugin. Consult the
+// Emotion documentation for setting that up for your project.
+const Hits = connectHits(({ hits }) => (
+  <div>
+    {/* Always use a ternary when coercing an array length */}
+    {/* otherwise you might print out "0" to your UI */}
+    {hits.length ? (
+      <>
+        {/* I wanted to give a little explanation of the search here */}
+        <div
+          css={{
+            fontFamily: FONTS.catamaran,
+            fontSize: '.85rem',
+            fontStyle: 'italic',
+            maxWidth: '30rem'
+          }}
+        >
+          These are the results of your search. The title and excerpt are
+          displayed, though your search may have been found in the content of
+          the post as well.
+        </div>
 
-        <div className="container">
-          <InstantSearch searchClient={searchClient} indexName="test_GRADIENT">
-            <div className="search-panel">
-              <div className="search-panel__filters">
-                <RefinementList attribute="brand" />
-              </div>
-
-              <div className="search-panel__results">
-                <SearchBox
-                  className="searchbox"
-                  translations={{
-                    placeholder: '',
-                  }}
-                />
-                <Hits hitComponent={Hit} />
-
-                <div className="pagination">
-                  <Pagination />
-                </div>
+        {/* Here is the crux of the component */}
+        {hits.map(hit => {
+          return (
+            <div css={{ marginBottom: bs() }} key={hit.objectID}>
+              <Link
+                css={{ display: 'block', marginBottom: bs(0.5) }}
+                to={hit.slug}
+              >
+                <h4 css={{ marginBottom: 0 }}>
+                  <Highlight attribute="title" hit={hit} tagName="strong" />
+                </h4>
+                {hit.subtitle ? (
+                  <h5 css={{ marginBottom: 0 }}>
+                    <Highlight
+                      attribute="subtitle"
+                      hit={hit}
+                      tagName="strong"
+                    />
+                  </h5>
+                ) : null}
+              </Link>
+              <div>
+                <Highlight attribute="excerpt" hit={hit} tagName="strong" />
               </div>
             </div>
-          </InstantSearch>
-        </div>
-      </div>
-    );
-  }
-}
+          )
+        })}
+      </>
+    ) : (
+      <p>There were no results for your query. Please try again.</p>
+    )}
+  </div>
+))
 
-function Hit(props) {
+export default function Search() {
   return (
-    <article>
-      <h1>
-        <Highlight attribute="name" hit={props.hit} />
-      </h1>
-      <p>
-        <Highlight attribute="description" hit={props.hit} />
-      </p>
-    </article>
-  );
+    <InstantSearch
+      indexName="test_GRADIENT"
+      searchClient={searchClient}
+    >
+      <SearchBox />
+      <Hits />
+    </InstantSearch>
+  )
 }
-
-Hit.propTypes = {
-  hit: PropTypes.object.isRequired,
-};
-
-export default App;
